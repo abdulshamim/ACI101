@@ -28,17 +28,23 @@ class EntriesTableViewController: UITableViewController
         return cell
     }
     
+    @available(iOS 11.0, *)
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
     {
-        let deleteAction = UIContextualAction.init(style: UIContextualAction.Style.destructive, title: "Delete", handler: { (action, view, completion) in
-
-            let entry = AppDelegate.entries.read()[indexPath.row]
-            AppDelegate.entries.delete(entry)
-
-            completion(true)
-        })
+        if #available(iOS 11.0, *) {
+            let deleteAction = UIContextualAction.init(style: UIContextualAction.Style.destructive, title: "Delete", handler: { (action, view, completion) in
+                
+                let entry = AppDelegate.entries.read()[indexPath.row]
+                AppDelegate.entries.delete(entry)
+                
+                completion(true)
+            })
+            return UISwipeActionsConfiguration(actions: [deleteAction])
+        } else {
+            // Fallback on earlier versions
+        }
         
-        return UISwipeActionsConfiguration(actions: [deleteAction])
+        return UISwipeActionsConfiguration()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
